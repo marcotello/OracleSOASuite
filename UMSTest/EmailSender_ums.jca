@@ -1,0 +1,13 @@
+<adapter-config name="EmailSender" adapter="UMS Adapter" wsdlLocation="EmailSender.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/ums/UMSAdapterOutbound"/>
+  <endpoint-interaction portType="SendNotification_ptt" operation="SendNotification">
+    <interaction-spec className="oracle.tip.adapter.ums.outbound.UmsInteractionSpec">
+      <property name="DeliveryType" value="Email"/>
+      <property name="Subject" value="Email Test"/>
+      <property name="To" value="some@email.com"/>
+      <property name="From" value="outgoing@email.com"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process name="EmailProcessor" targetNamespace="http://xmlns.oracle.com/SOA_Projects/UMSTest/EmailProcessor" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:client="http://xmlns.oracle.com/SOA_Projects/UMSTest/EmailProcessor" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/ums/SOA_Projects/UMSTest/EmailReciever" xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/ums/SOA_Projects/UMSTest/EmailSender" xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:ns3="http://platform.integration.oracle/blocks/adapter/fw/metadata/EmailReciever" xmlns:ns4="http://platform.integration.oracle/blocks/adapter/fw/metadata/EmailSender" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath" xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath" xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions" xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk" xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" id="BpPrc0">
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+    <partnerLinks>
+        <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+        <partnerLink name="EmailReciever" partnerLinkType="ns1:ReceiveNotification_plt" myRole="ReceiveNotification_role"/>
+        <partnerLink name="EmailSender" partnerLinkType="ns2:SendNotification_plt" partnerRole="SendNotification_role"/>
+    </partnerLinks>
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        VARIABLES                                                        
+        List of messages and XML documents used within this BPEL process 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <variables>
+        <!-- Reference to the message passed as input during initiation -->
+
+        <!-- Reference to the message that will be sent back to the requester during callback -->
+        <variable name="InputVariable" messageType="ns1:ReceiveNotification_msg"/>
+        <variable name="OutputVariable" messageType="ns2:SendNotification_msg"/>
+    </variables>
+
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ORCHESTRATION LOGIC                                               
+       Set of activities coordinating the flow of messages across the    
+       services integrated within this business process                  
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+    <sequence name="main" id="BpSeq0">
+        <!-- Receive input from requestor. (Note: This maps to operation defined in EmailProcessor.wsdl) -->
+        <receive name="receiveInput" variable="InputVariable" createInstance="yes" partnerLink="EmailReciever" portType="ns1:ReceiveNotification_ptt" operation="ReceiveNotification" id="BpRcv0"/>
+        <assign name="AssignMessage" id="BpAss0">
+            <copy>
+                <from expression="concat(bpws:getVariableData('InputVariable','body','/ns3:message/ns3:payload'), ' Some text added by BPEL')"/>
+                <to variable="OutputVariable" part="body" query="/ns4:message/ns4:payload"/>
+            </copy>
+        </assign>
+        <!-- 
+          Asynchronous callback to the requester. (Note: the callback location and correlation id is transparently handled using WS-addressing.)
+        -->
+        <invoke name="callbackClient" inputVariable="OutputVariable" partnerLink="EmailSender" portType="ns2:SendNotification_ptt" operation="SendNotification" bpelx:invokeAsDetail="no" id="BpInv0"/>
+    </sequence>
+</process><!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Sun Dec 01 21:57:31 CST 2013
+  Author:  marco
+  Type: BPEL 1.1 Process
+  Purpose: Asynchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
