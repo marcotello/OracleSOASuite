@@ -1,0 +1,14 @@
+<adapter-config name="dbFindCustomers" adapter="Database Adapter" wsdlLocation="dbFindCustomers.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/DB/SOA_UTILITIES_DEV" UIConnectionName="SOA_UTILITIES_DEV" adapterRef=""/>
+  <endpoint-interaction portType="dbFindCustomers_ptt" operation="dbFindCustomersSelect">
+    <interaction-spec className="oracle.tip.adapter.db.DBReadInteractionSpec">
+      <property name="DescriptorName" value="dbFindCustomers.Customer"/>
+      <property name="QueryName" value="dbFindCustomersSelect"/>
+      <property name="MappingsMetaDataURL" value="dbFindCustomers-or-mappings.xml"/>
+      <property name="ReturnSingleResultSet" value="false"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+  </endpoint-interaction>
+
+</adapter-config>
