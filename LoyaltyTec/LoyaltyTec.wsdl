@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions targetNamespace="urn:LoyaltyTec"
+             xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:LoyaltyTec"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+             xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+  <types>
+    <xsd:schema targetNamespace="urn:LoyaltyTec/types"
+                elementFormDefault="qualified"/>
+  </types>
+  <message name="GetLoyaltyPointsRq"/>
+</definitions>

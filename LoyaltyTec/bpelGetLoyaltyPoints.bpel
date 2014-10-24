@@ -1,0 +1,205 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Oct 22 10:25:22 CDT 2014
+  Author:  marco
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="bpelGetLoyaltyPoints"
+               targetNamespace="http://xmlns.oracle.com/SOAEnvironmentTest/LoyaltyTec/bpelGetLoyaltyPoints"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/SOAEnvironmentTest/LoyaltyTec/bpelGetLoyaltyPoints"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://soa.grupovidanta.com/LoyaltyTec"
+         xmlns:ns2="http://soa.grupovidanta.com/VidantaCommons/LoyaltyTec"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <import namespace="http://xmlns.oracle.com/SOAEnvironmentTest/LoyaltyTec/bpelGetLoyaltyPoints" location="bpelGetLoyaltyPoints.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import location="oracle.xml.parser.v2.XMLElement" importType="http://schemas.oracle.com/bpel/extension/java"/>
+    <import location="java.util.Random" importType="http://schemas.oracle.com/bpel/extension/java"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="bpelgetloyaltypoints_client" partnerLinkType="client:bpelGetLoyaltyPoints" myRole="bpelGetLoyaltyPointsProvider"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:bpelGetLoyaltyPointsRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:bpelGetLoyaltyPointsResponseMessage"/>
+    <variable name="points" type="xsd:int"/>
+    <variable name="customerID" type="xsd:int"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpelx:remoteFault">
+      <sequence name="Sequence1">
+        <assign name="assignError">
+          <extensionAssignOperation>
+            <bpelx:remove>
+              <bpelx:target>$outputVariable.payload/ns1:Success</bpelx:target>
+            </bpelx:remove>
+          </extensionAssignOperation>
+          <extensionAssignOperation>
+            <bpelx:remove>
+              <bpelx:target>$outputVariable.payload/ns1:Points</bpelx:target>
+            </bpelx:remove>
+          </extensionAssignOperation>
+          <copy>
+            <from>'001'</from>
+            <to>$outputVariable.payload/ns1:Errors/ns2:Error/ns2:ErrorCode</to>
+          </copy>
+          <copy>
+            <from>'SOA FATAL ERROR'</from>
+            <to>$outputVariable.payload/ns1:Errors/ns2:Error/ns2:Description</to>
+          </copy>
+          <copy>
+            <from>'Get Loyalty Points'</from>
+            <to>$outputVariable.payload/ns1:Errors/ns2:Error/ns2:BusinessProcess</to>
+          </copy>
+          <copy>
+            <from>'LoyaltyTec'</from>
+            <to>$outputVariable.payload/ns1:Errors/ns2:Error/ns2:FailedService</to>
+          </copy>
+          <copy>
+            <from>xp20:current-dateTime()</from>
+            <to>$outputVariable.payload/ns1:Errors/ns2:Error/ns2:TimeStamp</to>
+          </copy>
+        </assign>
+      </sequence>
+    </catch>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in bpelGetLoyaltyPoints.wsdl) -->
+    <receive name="receiveInput" partnerLink="bpelgetloyaltypoints_client" portType="client:bpelGetLoyaltyPoints" operation="process" variable="inputVariable" createInstance="yes"/>
+    <extensionActivity>
+      <bpelx:exec name="GenerateRandomNumer" language="java">
+        <![CDATA[/*Write your java code below e.g. 
+	System.out.println("Hello, World");
+*/
+/*Write your java code below e.g. 
+	System.out.println("Hello, World");
+*/
+try{
+    
+    int points = 0;
+
+    //java.util.Random random = new java.util.Random();
+    Random random = new Random();
+    points = random.nextInt(1000);
+
+
+    /* accessing a variable within the complex type - customer */
+    XMLElement customerID = (XMLElement)getVariableData("customerID");
+    String cID = customerID.getTextContent();
+
+    /* setting the output variable within the complex type - customer */
+    //setVariableData("outputVariable", "payload", "/ns1:GetLoyaltyPointsRs/ns1:Points", points);
+    setVariableData("points", points);   
+
+    System.out.println("The customer " + cID + " points are: " + points);
+    addAuditTrailEntry("The customer " + cID + " points are: " + points);
+
+}
+/* End of Code snippet */
+catch (Exception e) {
+    addAuditTrailEntry(e);
+    System.out.println("ERROR: " + e);
+}]]>
+      </bpelx:exec>
+    </extensionActivity>
+    <if name="If1">
+      <documentation>
+        <![CDATA[If Random Number was generated]]>
+      </documentation>
+      <condition>number($points) &gt; 0</condition>
+      <assign name="assingSuccess">
+        <extensionAssignOperation>
+          <bpelx:remove>
+            <bpelx:target>$outputVariable.payload/ns1:Errors</bpelx:target>
+          </bpelx:remove>
+        </extensionAssignOperation>
+        <copy>
+          <from>$points</from>
+          <to>$outputVariable.payload/ns1:Points</to>
+        </copy>
+      </assign>
+      <else>
+        <assign name="assignErrors">
+          <extensionAssignOperation>
+            <bpelx:remove>
+              <bpelx:target>$outputVariable.payload/ns1:Points</bpelx:target>
+            </bpelx:remove>
+          </extensionAssignOperation>
+          <extensionAssignOperation>
+            <bpelx:remove>
+              <bpelx:target>$outputVariable.payload/ns1:Success</bpelx:target>
+            </bpelx:remove>
+          </extensionAssignOperation>
+          <copy>
+            <from>'002'</from>
+            <to>$outputVariable.payload/ns1:Errors/ns2:Error/ns2:ErrorCode</to>
+          </copy>
+          <copy>
+            <from>'Could not generate the random number'</from>
+            <to>$outputVariable.payload/ns1:Errors/ns2:Error/ns2:Description</to>
+          </copy>
+          <copy>
+            <from>'Loyalty points'</from>
+            <to>$outputVariable.payload/ns1:Errors/ns2:Error/ns2:BusinessProcess</to>
+          </copy>
+          <copy>
+            <from>'LoyaltyTec'</from>
+            <to>$outputVariable.payload/ns1:Errors/ns2:Error/ns2:FailedService</to>
+          </copy>
+          <copy>
+            <from>xp20:current-dateTime()</from>
+            <to>$outputVariable.payload/ns1:Errors/ns2:Error/ns2:TimeStamp</to>
+          </copy>
+        </assign>
+      </else>
+    </if>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="bpelgetloyaltypoints_client" portType="client:bpelGetLoyaltyPoints" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>
