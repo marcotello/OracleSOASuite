@@ -1,13 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<definitions targetNamespace="urn:LoyaltyTec"
-             xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:LoyaltyTec"
+<definitions targetNamespace="http://soa.grupovidanta.com/LoyaltyTec"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
              xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
              xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
-             xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+             xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+             xmlns:tns="http://soa.grupovidanta.com/LoyaltyTec">
   <types>
-    <xsd:schema targetNamespace="urn:LoyaltyTec/types"
-                elementFormDefault="qualified"/>
+    <xsd:schema targetNamespace="http://soa.grupovidanta.com/LoyaltyTec/types"
+                elementFormDefault="qualified">
+      <xsd:import schemaLocation="xsd/LoyaltyTec.xsd"
+                  namespace="http://soa.grupovidanta.com/LoyaltyTec"/>
+    </xsd:schema>
   </types>
-  <message name="GetLoyaltyPointsRq"/>
+  <message name="GetLoyaltyPointsRq">
+    <part name="GetLoyaltyPoinsRq" element="tns:GetLoyaltyPoinsRq"/>
+  </message>
+  <message name="GetLoyaltyPoinsRs">
+    <part name="GetLoyaltyPoinsRs" element="tns:GetLoyaltyPoinsRs"/>
+  </message>
+  <portType name="LoyaltyTecPort">
+    <operation name="GetLoyaltyPoints">
+      <input message="tns:GetLoyaltyPointsRq"/>
+      <output message="tns:GetLoyaltyPoinsRs"/>
+    </operation>
+  </portType>
+  <binding name="LoyaltyTecBinding" type="tns:LoyaltyTecPort">
+    <soap12:binding style="document"
+                    transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="GetLoyaltyPoints">
+      <soap12:operation style="document"
+                        soapAction="http://soa.grupovidanta.com/LoyaltyTec/GetLoyaltyPoints"/>
+      <input>
+        <soap12:body use="literal" parts="GetLoyaltyPoinsRq"/>
+      </input>
+      <output>
+        <soap12:body use="literal" parts="GetLoyaltyPoinsRs"/>
+      </output>
+    </operation>
+  </binding>
 </definitions>
