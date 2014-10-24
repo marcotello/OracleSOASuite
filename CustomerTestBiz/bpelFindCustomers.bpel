@@ -1,0 +1,110 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Thu Oct 23 14:59:19 CDT 2014
+  Author:  marco
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="bpelFindCustomers"
+               targetNamespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindCustomers"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindCustomers"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://soa.grupovidanta.com/CustomerTestTec"
+         xmlns:ns2="http://soa.grupovidanta.com/CustomerTestBiz"
+         xmlns:ns4="http://soa.grupovidanta.com/VidantaCommons/CustomerTestBiz"
+         xmlns:ns3="http://soa.grupovidanta.com/VidantaCommons/CustomerTestTec">
+
+    <import namespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindCustomers" location="bpelFindCustomers.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="bpelfindcustomers_client" partnerLinkType="client:bpelFindCustomers" myRole="bpelFindCustomersProvider"/>
+    <partnerLink name="CustomerTestTec" partnerLinkType="ns1:CustomerTestTec"
+                 partnerRole="CustomerTestTecPort"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:bpelFindCustomersRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:bpelFindCustomersResponseMessage"/>
+    <variable name="invokeFindCustomers_FindCustomer_InputVariable"
+              messageType="ns1:FindCustomerRq"/>
+    <variable name="invokeFindCustomers_FindCustomer_OutputVariable"
+              messageType="ns1:FindCustomerRs"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in bpelFindCustomers.wsdl) -->
+    <receive name="receiveInput" partnerLink="bpelfindcustomers_client" portType="client:bpelFindCustomers" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="Assign1">
+      <copy>
+        <from>$inputVariable.payload/ns2:CustomerID</from>
+        <to>$invokeFindCustomers_FindCustomer_InputVariable.FindCustomerRq/ns1:CustomerID</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/ns2:FirstName</from>
+        <to>$invokeFindCustomers_FindCustomer_InputVariable.FindCustomerRq/ns1:FirstName</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/ns2:LastName</from>
+        <to>$invokeFindCustomers_FindCustomer_InputVariable.FindCustomerRq/ns1:LastName</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/ns2:Email</from>
+        <to>$invokeFindCustomers_FindCustomer_InputVariable.FindCustomerRq/ns1:Email</to>
+      </copy>
+      <copy>
+        <from>$inputVariable.payload/ns2:UserName</from>
+        <to>$invokeFindCustomers_FindCustomer_InputVariable.FindCustomerRq/ns1:UserName</to>
+      </copy>
+    </assign>
+    <invoke name="invokeFindCustomers" bpelx:invokeAsDetail="no"
+            partnerLink="CustomerTestTec" portType="ns1:CustomerTestTecPort"
+            operation="FindCustomer"
+            inputVariable="invokeFindCustomers_FindCustomer_InputVariable"
+            outputVariable="invokeFindCustomers_FindCustomer_OutputVariable"/>
+    <assign name="transformOutput">
+      <bpelx:annotation>
+        <bpelx:pattern patternName="bpelx:transformation"/>
+      </bpelx:annotation>
+      <copy>
+        <from>ora:doXSLTransformForDoc("xsl/FindCustomersOutput.xsl", $invokeFindCustomers_FindCustomer_OutputVariable.FindCustomerRs)</from>
+        <to variable="outputVariable" part="payload"/>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="bpelfindcustomers_client" portType="client:bpelFindCustomers" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

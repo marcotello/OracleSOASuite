@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://soa.grupovidanta.com/CustomerTestBiz"
+            targetNamespace="http://soa.grupovidanta.com/CustomerTestBiz"
+            xmlns:vid="http://soa.grupovidanta.com/VidantaCommons/CustomerTestBiz"
+            elementFormDefault="qualified">
+  <xsd:import schemaLocation="VidantaCommons.xsd"
+              namespace="http://soa.grupovidanta.com/VidantaCommons/CustomerTestBiz"/>
+  <xsd:element name="FindCustomersRq">
+    <xsd:annotation>
+      <xsd:documentation>
+        A sample element
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="CustomerID" type="xsd:integer" minOccurs="0"
+                     maxOccurs="1"/>
+        <xsd:element name="FirstName" type="xsd:string" maxOccurs="1"
+                     minOccurs="0"/>
+        <xsd:element name="LastName" type="xsd:string" maxOccurs="1"
+                     minOccurs="0"/>
+        <xsd:element name="Email" type="xsd:string" maxOccurs="1"
+                     minOccurs="0"/>
+        <xsd:element name="UserName" type="xsd:string" minOccurs="0"
+                     maxOccurs="1"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="FindCustomersRs">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Success" minOccurs="0" maxOccurs="1"
+                     type="vid:SuccessType"/>
+        <xsd:element name="Customers" type="tns:CustomersType"/>
+        <xsd:element name="Errors" type="vid:ErrorsType" minOccurs="0"
+                     maxOccurs="1"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="CustomerBasicInfoType">
+    <xsd:sequence>
+       <xsd:element name="ID" type="xsd:integer"/>
+       <xsd:element name="Name" type="xsd:string"/>
+       <xsd:element name="LastName" type="xsd:string"/>
+       <xsd:element name="MiddleName" type="xsd:string"/>
+       <xsd:element name="Gender" type="xsd:string"/>
+       <xsd:element name="Email" type="xsd:string"/>
+       <xsd:element name="UserName" type="xsd:string"/>
+       <xsd:element name="Password" type="xsd:string"/>
+       <xsd:element name="BirthDate" type="xsd:date"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CustomerType">
+    <xsd:sequence>
+      <xsd:element name="BasicInformation" type="tns:CustomerBasicInfoType"/>
+      <xsd:element name="Address" type="tns:AddressType"/>
+      <xsd:element name="CreditCard" type="tns:CardType"/>
+      <xsd:element name="AditionalInfo" type="tns:AditionalInfoType"/>
+      <xsd:element name="Memebership" type="tns:MembershipType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="AddressType">
+    <xsd:sequence>
+      <xsd:element name="City" type="xsd:string"/>
+      <xsd:element name="State" type="xsd:string"/>
+      <xsd:element name="ZipCode" type="xsd:integer"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CardType">
+    <xsd:sequence>
+      <xsd:element name="Number" type="xsd:string"/>
+      <xsd:element name="CVV" type="xsd:integer"/>
+      <xsd:element name="ExpirationDate" type="xsd:date"/>
+      <xsd:element name="Type" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="AditionalInfoType">
+    <xsd:sequence>
+      <xsd:element name="Company" type="xsd:string"/>
+      <xsd:element name="Vehicle" type="xsd:string"/>
+      <xsd:element name="TelephoneNumber" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CustomersType">
+    <xsd:annotation>
+      <xsd:documentation>
+        Contains a list of Customers
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Customer" type="tns:CustomerType" minOccurs="0"
+                   maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="MembershipType">
+    <xsd:sequence>
+      <xsd:element name="MembershipCategory" type="xsd:string"/>
+      <xsd:element name="LoyaltyPoints" type="xsd:integer"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
