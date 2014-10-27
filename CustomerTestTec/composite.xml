@@ -16,7 +16,7 @@
           location="CustomerTestTec.wsdl" importType="wsdl"/>
   <service name="CustomerTestTec" ui:wsdlLocation="CustomerTestTec.wsdl">
     <interface.wsdl interface="http://soa.grupovidanta.com/CustomerTestTec#wsdl.interface(CustomerTestTecPort)"/>
-    <binding.ws port="http://soa.grupovidanta.com/CustomerTestTec#wsdl.endpoint(CustomerTestTec/CustomerTestTecPort_pt)">
+    <binding.ws port="http://soa.grupovidanta.com/CustomerTestTec#wsdl.endpoint(CustomerTestTec/CustomerTestTecPort_pt)" soapVersion="1.2">
       <property name="weblogic.wsee.wsat.transaction.flowOption"
                 type="xs:string" many="false">NEVER</property>
     </binding.ws>

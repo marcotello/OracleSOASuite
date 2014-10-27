@@ -28,9 +28,9 @@
    <entry key="CUSTOMER.BIRTHDAY:db_column_size">10</entry>
    <entry key="CUSTOMER:db_column_9">STATE</entry>
    <entry key="CUSTOMER:db_column_8">CITY</entry>
-   <entry key="return_single_result_set">false</entry>
    <entry key="CUSTOMER:db_column_7">PASSWORD</entry>
    <entry key="CUSTOMER.CCTYPE:db_column_not_null">true</entry>
+   <entry key="return_single_result_set">false</entry>
    <entry key="CUSTOMER.STATE:db_column_type">VARCHAR2</entry>
    <entry key="CUSTOMER:db_column_6">USERNAME</entry>
    <entry key="CUSTOMER:db_column_5">EMAILADDRESS</entry>
@@ -52,8 +52,8 @@
    <entry key="CUSTOMER:db_column_18">VEHICLE</entry>
    <entry key="CUSTOMER.CVV2:db_column_not_null">true</entry>
    <entry key="CUSTOMER:db_column_17">COMPANY</entry>
-   <entry key="CUSTOMER.VEHICLE:db_column_size">255</entry>
    <entry key="CUSTOMER:db_column_16">CCEXPIRES</entry>
+   <entry key="CUSTOMER.VEHICLE:db_column_size">255</entry>
    <entry key="CUSTOMER.number:db_column_type">NUMBER</entry>
    <entry key="CUSTOMER:db_column_15">CVV2</entry>
    <entry key="CUSTOMER:db_column_14">CCNUMBER</entry>
