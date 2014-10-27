@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions
-    
-     targetNamespace="http://soa.grupovidanta.com/CustomerTestTec"
-     xmlns="http://schemas.xmlsoap.org/wsdl/"
-     xmlns:tns="http://soa.grupovidanta.com/CustomerTestTec"
-     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-     xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
-     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-     xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
-    >
-    <documentation>
-        <abstractWSDL>CustomerTestTec_1.wsdl</abstractWSDL>
-    </documentation>
+<definitions targetNamespace="http://soa.grupovidanta.com/CustomerTestTec"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:tns="http://soa.grupovidanta.com/CustomerTestTec"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
     <types>
-        <xsd:schema targetNamespace="http://soa.grupovidanta.com/CustomerTestTec/types" elementFormDefault="qualified">
-            <xsd:import schemaLocation="xsd/CustomerTestTec.xsd" namespace="http://soa.grupovidanta.com/CustomerTestTec"/>
+        <xsd:schema targetNamespace="http://soa.grupovidanta.com/CustomerTestTec/types"
+                    elementFormDefault="qualified">
+            <xsd:import schemaLocation="xsd/CustomerTestTec.xsd"
+                        namespace="http://soa.grupovidanta.com/CustomerTestTec"/>
         </xsd:schema>
     </types>
     <message name="FindCustomerRq">
@@ -31,10 +26,12 @@
         </operation>
     </portType>
     <binding name="CustomerTestTecBinding" type="tns:CustomerTestTecPort">
-        <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <soap12:binding style="document"
+                        transport="http://schemas.xmlsoap.org/soap/http"/>
         <operation name="FindCustomer">
-            <soap12:operation style="document" soapAction="http://soa.grupovidanta.com/CustomerTestTec/FindCustomer"
-                 soapActionRequired="false"/>
+            <soap12:operation style="document"
+                              soapAction="http://soa.grupovidanta.com/CustomerTestTec/FindCustomer"
+                              soapActionRequired="false"/>
             <input>
                 <soap12:body use="literal" parts="FindCustomerRq"/>
             </input>
@@ -43,20 +40,9 @@
             </output>
         </operation>
     </binding>
-    <binding name="CustomerTestTecPortBinding" type="tns:CustomerTestTecPort">
-        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
-        <operation name="FindCustomer">
-            <soap:operation style="document" soapAction="FindCustomer"/>
-            <input>
-                <soap:body use="literal"/>
-            </input>
-            <output>
-                <soap:body use="literal"/>
-            </output>
-        </operation>
-    </binding>
     <service name="CustomerTestTec">
-        <port name="CustomerTestTecPort_pt" binding="tns:CustomerTestTecPortBinding">
+        <port name="CustomerTestTecPort_pt"
+              binding="tns:CustomerTestTecBinding">
             <soap:address location="http://10.1.200.52:2080/soa-infra/services/default/CustomerTestTec/CustomerTestTec"/>
         </port>
     </service>

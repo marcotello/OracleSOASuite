@@ -1,10 +1,10 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <jpr:project xmlns:jpr="http://xmlns.oracle.com/ide/project">
-   <url n="bpelFindCustomers_bpelFileURL" path="bpelFindCustomers.bpel"/>
-   <value n="bpelFindCustomers_Namespace" v="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindCustomers"/>
-   <value n="bpelFindCustomers_ProcessName" v="bpelFindCustomers"/>
-   <value n="bpelFindCustomers_Template" v="BPEL_SYNC_PROCESS"/>
-   <value n="bpelFindCustomers_wsdl" v="bpelFindCustomers.wsdl"/>
+   <url n="bpelFindReservations_bpelFileURL" path="bpelFindReservations.bpel"/>
+   <value n="bpelFindReservations_Namespace" v="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindReservations"/>
+   <value n="bpelFindReservations_ProcessName" v="bpelFindReservations"/>
+   <value n="bpelFindReservations_Template" v="BPEL_SYNC_PROCESS"/>
+   <value n="bpelFindReservations_wsdl" v="bpelFindReservations.wsdl"/>
    <hash n="component-versions">
       <value n="oracle.adfdt.controller.adfc.source.migration.AdfControllerSchemaMigrator" v="11.1.1.1.0"/>
       <value n="oracle.adfdt.controller.common.migrator.ProjectMigrator" v="11.1.1.1.0"/>
@@ -66,7 +66,7 @@
       <string v="oracle.toplink.workbench.addin/toplinkContentSet"/>
    </list>
    <value n="defaultPackage" v="customertestbiz"/>
-   <value n="Namespace" v="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindCustomers"/>
+   <value n="Namespace" v="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindReservations"/>
    <hash n="oracle.ide.model.ResourcePaths">
       <hash n="resourcesContentSet">
          <list n="url-path"/>
@@ -376,6 +376,6 @@
          </list>
       </hash>
    </hash>
-   <value n="ProcessName" v="bpelFindCustomers"/>
+   <value n="ProcessName" v="bpelFindReservations"/>
    <value n="Template" v="BPEL_SYNC_PROCESS"/>
 </jpr:project>

@@ -3,25 +3,34 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Oracle JDeveloper BPEL Designer 
   
-  Created: Thu Oct 23 14:59:19 CDT 2014
+  Created: Fri Oct 24 12:25:00 CDT 2014
   Author:  marco
   Type: BPEL 2.0 Process
   Purpose: Synchronous BPEL Process
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 -->
-<process name="bpelFindCustomers"
-               targetNamespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindCustomers"
+<process name="bpelFindReservations"
+               targetNamespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindReservations"
                xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
-               xmlns:client="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindCustomers"
+               xmlns:client="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindReservations"
                xmlns:ora="http://schemas.oracle.com/xpath/extension"
                xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
          xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
          xmlns:ns1="http://soa.grupovidanta.com/CustomerTestTec"
          xmlns:ns2="http://soa.grupovidanta.com/CustomerTestBiz"
-         xmlns:ns4="http://soa.grupovidanta.com/VidantaCommons/CustomerTestBiz"
-         xmlns:ns3="http://soa.grupovidanta.com/VidantaCommons/CustomerTestTec">
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns3="http://soa.grupovidanta.com/VidantaCommons/CustomerTestBiz">
 
-    <import namespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindCustomers" location="bpelFindCustomers.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindReservations" location="bpelFindReservations.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <!-- 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         PARTNERLINKS                                                      
@@ -34,7 +43,7 @@
       used for callback. The location and correlation information associated
       with the client role are automatically set using WS-Addressing.
     -->
-    <partnerLink name="bpelfindcustomers_client" partnerLinkType="client:bpelFindCustomers" myRole="bpelFindCustomersProvider"/>
+    <partnerLink name="bpelfindreservations_client" partnerLinkType="client:bpelFindReservations" myRole="bpelFindReservationsProvider"/>
     <partnerLink name="CustomerTestTec" partnerLinkType="ns1:CustomerTestTec"
                  partnerRole="CustomerTestTecPort"/>
   </partnerLinks>
@@ -47,13 +56,13 @@
   -->
   <variables>
     <!-- Reference to the message passed as input during initiation -->
-    <variable name="inputVariable" messageType="client:bpelFindCustomersRequestMessage"/>
+    <variable name="inputVariable" messageType="client:bpelFindReservationsRequestMessage"/>
 
     <!-- Reference to the message that will be returned to the requester-->
-    <variable name="outputVariable" messageType="client:bpelFindCustomersResponseMessage"/>
-    <variable name="invokeFindCustomers_FindCustomer_InputVariable"
+    <variable name="outputVariable" messageType="client:bpelFindReservationsResponseMessage"/>
+    <variable name="invokeFindCustomer_FindCustomer_InputVariable"
               messageType="ns1:FindCustomerRq"/>
-    <variable name="invokeFindCustomers_FindCustomer_OutputVariable"
+    <variable name="invokeFindCustomer_FindCustomer_OutputVariable"
               messageType="ns1:FindCustomerRs"/>
   </variables>
 
@@ -66,45 +75,45 @@
   -->
   <sequence name="main">
 
-    <!-- Receive input from requestor. (Note: This maps to operation defined in bpelFindCustomers.wsdl) -->
-    <receive name="receiveInput" partnerLink="bpelfindcustomers_client" portType="client:bpelFindCustomers" operation="process" variable="inputVariable" createInstance="yes"/>
-    <assign name="Assign1">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in bpelFindReservations.wsdl) -->
+    <receive name="receiveInput" partnerLink="bpelfindreservations_client" portType="client:bpelFindReservations" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="assignInput">
       <copy>
         <from>$inputVariable.payload/ns2:CustomerID</from>
-        <to>$invokeFindCustomers_FindCustomer_InputVariable.FindCustomerRq/ns1:CustomerID</to>
+        <to>$invokeFindCustomer_FindCustomer_InputVariable.FindCustomerRq/ns1:CustomerID</to>
       </copy>
       <copy>
         <from>$inputVariable.payload/ns2:FirstName</from>
-        <to>$invokeFindCustomers_FindCustomer_InputVariable.FindCustomerRq/ns1:FirstName</to>
+        <to>$invokeFindCustomer_FindCustomer_InputVariable.FindCustomerRq/ns1:FirstName</to>
       </copy>
       <copy>
         <from>$inputVariable.payload/ns2:LastName</from>
-        <to>$invokeFindCustomers_FindCustomer_InputVariable.FindCustomerRq/ns1:LastName</to>
+        <to>$invokeFindCustomer_FindCustomer_InputVariable.FindCustomerRq/ns1:LastName</to>
       </copy>
       <copy>
         <from>$inputVariable.payload/ns2:Email</from>
-        <to>$invokeFindCustomers_FindCustomer_InputVariable.FindCustomerRq/ns1:Email</to>
+        <to>$invokeFindCustomer_FindCustomer_InputVariable.FindCustomerRq/ns1:Email</to>
       </copy>
       <copy>
         <from>$inputVariable.payload/ns2:UserName</from>
-        <to>$invokeFindCustomers_FindCustomer_InputVariable.FindCustomerRq/ns1:UserName</to>
+        <to>$invokeFindCustomer_FindCustomer_InputVariable.FindCustomerRq/ns1:UserName</to>
       </copy>
     </assign>
-    <invoke name="invokeFindCustomers" bpelx:invokeAsDetail="no"
+    <invoke name="invokeFindCustomer" bpelx:invokeAsDetail="no"
             partnerLink="CustomerTestTec" portType="ns1:CustomerTestTecPort"
             operation="FindCustomer"
-            inputVariable="invokeFindCustomers_FindCustomer_InputVariable"
-            outputVariable="invokeFindCustomers_FindCustomer_OutputVariable"/>
+            inputVariable="invokeFindCustomer_FindCustomer_InputVariable"
+            outputVariable="invokeFindCustomer_FindCustomer_OutputVariable"/>
     <assign name="transformOutput">
       <bpelx:annotation>
         <bpelx:pattern patternName="bpelx:transformation"/>
       </bpelx:annotation>
       <copy>
-        <from>ora:doXSLTransformForDoc("xsl/FindCustomersOutput.xsl", $invokeFindCustomers_FindCustomer_OutputVariable.FindCustomerRs)</from>
+        <from>ora:doXSLTransformForDoc("xsl/Transformation_1.xsl", $invokeFindCustomer_FindCustomer_OutputVariable.FindCustomerRs)</from>
         <to variable="outputVariable" part="payload"/>
       </copy>
     </assign>
     <!-- Generate reply to synchronous request -->
-    <reply name="replyOutput" partnerLink="bpelfindcustomers_client" portType="client:bpelFindCustomers" operation="process" variable="outputVariable"/>
+    <reply name="replyOutput" partnerLink="bpelfindreservations_client" portType="client:bpelFindReservations" operation="process" variable="outputVariable"/>
   </sequence>
 </process>

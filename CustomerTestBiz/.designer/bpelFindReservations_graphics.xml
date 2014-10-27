@@ -4,7 +4,7 @@
    <annotationfile/>
    <iconize/>
    <partnerlink_locations>
-      <partnerlink name="bpelfindcustomers_client" x="0" y="275" side="left"/>
+      <partnerlink name="bpelfindreservations_client" x="2" y="275" side="left"/>
       <partnerlink name="CustomerTestTec" x="1042" y="278" side="right"/>
    </partnerlink_locations>
    <graph_layout viewport="0,0,1175,535" show_swimlanes="true">

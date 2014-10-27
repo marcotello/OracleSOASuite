@@ -1,31 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions name="bpelFindCustomers"
-             targetNamespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindCustomers"
+<wsdl:definitions name="bpelFindReservations"
+             targetNamespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindReservations"
              xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-             xmlns:client="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindCustomers"
+             xmlns:client="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindReservations"
              xmlns:ns1="http://soa.grupovidanta.com/CustomerTestBiz"
              xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype">
 
+	<wsdl:import namespace="http://soa.grupovidanta.com/CustomerTestBiz" location="xsd/CustomerTestBiz.xsd" />
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	TYPE DEFINITION - List of services participating in this BPEL process
 	The default output of the BPEL designer uses strings as input and 
 	output to the BPEL Process. But you can define or import any XML 
 	Schema type and use them as part of the message types.
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->   
-	<wsdl:types>
-		<schema xmlns="http://www.w3.org/2001/XMLSchema">
-			<import namespace="http://soa.grupovidanta.com/CustomerTestBiz" schemaLocation="xsd/CustomerTestBiz.xsd" />
-		</schema>
-	</wsdl:types>
-
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	MESSAGE TYPE DEFINITION - Definition of the message types used as 
 	part of the port type defintions
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->      
-	<wsdl:message name="bpelFindCustomersRequestMessage">
+	<wsdl:message name="bpelFindReservationsRequestMessage">
 		<wsdl:part name="payload" element="ns1:FindCustomersRq" />
 	</wsdl:message>
-	<wsdl:message name="bpelFindCustomersResponseMessage">
+	<wsdl:message name="bpelFindReservationsResponseMessage">
 		<wsdl:part name="payload" element="ns1:FindCustomersRs" />
 	</wsdl:message>
 
@@ -34,18 +29,18 @@
 	a logical service unit.
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-	<!-- portType implemented by the bpelFindCustomers BPEL process -->
-	<wsdl:portType name="bpelFindCustomers">
+	<!-- portType implemented by the bpelFindReservations BPEL process -->
+	<wsdl:portType name="bpelFindReservations">
 		<wsdl:operation name="process">
-			<wsdl:input  message="client:bpelFindCustomersRequestMessage" />
-			<wsdl:output message="client:bpelFindCustomersResponseMessage"/>
+			<wsdl:input  message="client:bpelFindReservationsRequestMessage" />
+			<wsdl:output message="client:bpelFindReservationsResponseMessage"/>
 		</wsdl:operation>
 	</wsdl:portType>
 
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	PARTNER LINK TYPE DEFINITION
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --> 
-	<plnk:partnerLinkType name="bpelFindCustomers">
-		<plnk:role name="bpelFindCustomersProvider" portType="client:bpelFindCustomers"/>
+	<plnk:partnerLinkType name="bpelFindReservations">
+		<plnk:role name="bpelFindReservationsProvider" portType="client:bpelFindReservations"/>
 	</plnk:partnerLinkType>
 </wsdl:definitions>
