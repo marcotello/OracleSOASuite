@@ -3,22 +3,22 @@
             xmlns:rls="http://soa.grupovidanta.com/CustomerTestBiz/Rules"
             targetNamespace="http://soa.grupovidanta.com/CustomerTestBiz/Rules"
             elementFormDefault="qualified">
-  <xsd:element name="LoyaltyPoints" type="rls:LoyaltyPointsType">
+  <xsd:element name="CustomerLocation" type="rls:CustomerLocationType"/>
+  <xsd:element name="MembershipCategory" type="rls:MembershipCategoryType">
     <xsd:annotation>
       <xsd:documentation>
         A sample element
       </xsd:documentation>
     </xsd:annotation>
   </xsd:element>
-  <xsd:element name="CustomerLocation" type="rls:CustomerLocationType"/>
   <xsd:complexType name="CustomerLocationType">
     <xsd:sequence>
       <xsd:element name="State" type="xsd:string"/>
     </xsd:sequence>
   </xsd:complexType>
-  <xsd:complexType name="LoyaltyPointsType">
+  <xsd:complexType name="MembershipCategoryType">
     <xsd:sequence>
-      <xsd:element name="Points" type="xsd:integer"/>
+      <xsd:element name="MemebershipCategory" type="xsd:string"/>
     </xsd:sequence>
   </xsd:complexType>
 </xsd:schema>

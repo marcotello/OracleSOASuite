@@ -18,6 +18,11 @@
           location="CustomerTestTec.wsdl" importType="wsdl"/>
   <import namespace="http://soa.grupovidanta.com/CustomerTestTec"
           location="CustomerTestTecWrapper.wsdl" importType="wsdl"/>
+  <import namespace="http://soa.grupovidanta.com/LoyaltyTec"
+          location="LoyaltyTec.wsdl"
+          importType="wsdl"/>
+  <import namespace="http://soa.grupovidanta.com/LoyaltyTec"
+          location="LoyaltyTecWrapper.wsdl" importType="wsdl"/>
   <service name="CustomerTestBiz" ui:wsdlLocation="CustomerTestBiz.wsdl">
     <interface.wsdl interface="http://soa.grupovidanta.com/CustomerTestBiz#wsdl.interface(CustomerTestBizPort)"/>
     <binding.ws port="http://soa.grupovidanta.com/CustomerTestBiz#wsdl.endpoint(CustomerTestBiz/CustomerTestBizPort_pt)" soapVersion="1.2">
@@ -35,11 +40,21 @@
     <property name="bpel.config.oneWayDeliveryPolicy" type="xs:string"
               many="false">async.persist</property>
   </component>
-  <reference name="CustomerTestTec"
+  <reference name="wsCustomerTestTec"
              ui:wsdlLocation="CustomerTestTec.wsdl">
     <interface.wsdl interface="http://soa.grupovidanta.com/CustomerTestTec#wsdl.interface(CustomerTestTecPort)"/>
     <binding.ws port="http://soa.grupovidanta.com/CustomerTestTec#wsdl.endpoint(CustomerTestTec/CustomerTestTecPort_pt)"
                 location="CustomerTestTec.wsdl" soapVersion="1.1">
+      <property name="weblogic.wsee.wsat.transaction.flowOption"
+                type="xs:string" many="false">WSDLDriven</property>
+    </binding.ws>
+  </reference>
+  <reference name="wsLoyaltyTec"
+             ui:wsdlLocation="LoyaltyTec.wsdl">
+    <interface.wsdl interface="http://soa.grupovidanta.com/LoyaltyTec#wsdl.interface(LoyaltyTecPort)"/>
+    <binding.ws port="http://soa.grupovidanta.com/LoyaltyTec#wsdl.endpoint(LoyaltyTec/LoyaltyTecPort_pt)"
+                location="LoyaltyTec.wsdl"
+                soapVersion="1.2">
       <property name="weblogic.wsee.wsat.transaction.flowOption"
                 type="xs:string" many="false">WSDLDriven</property>
     </binding.ws>
@@ -54,6 +69,10 @@
   </wire>
   <wire>
     <source.uri>bpelFindReservations/CustomerTestTec</source.uri>
-    <target.uri>CustomerTestTec</target.uri>
+    <target.uri>wsCustomerTestTec</target.uri>
+  </wire>
+  <wire>
+    <source.uri>bpelFindReservations/wsLoyaltyTec</source.uri>
+    <target.uri>wsLoyaltyTec</target.uri>
   </wire>
 </composite>

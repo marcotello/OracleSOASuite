@@ -28,7 +28,10 @@
          xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
          xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
          xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
-         xmlns:ns3="http://soa.grupovidanta.com/VidantaCommons/CustomerTestBiz">
+         xmlns:ns3="http://soa.grupovidanta.com/VidantaCommons/CustomerTestBiz"
+         xmlns:ns4="http://soa.grupovidanta.com/LoyaltyTec"
+         xmlns:ns5="http://soa.grupovidanta.com/VidantaCommons/LoyaltyTec"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
     <import namespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindReservations" location="bpelFindReservations.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <!-- 
@@ -46,6 +49,8 @@
     <partnerLink name="bpelfindreservations_client" partnerLinkType="client:bpelFindReservations" myRole="bpelFindReservationsProvider"/>
     <partnerLink name="CustomerTestTec" partnerLinkType="ns1:CustomerTestTec"
                  partnerRole="CustomerTestTecPort"/>
+    <partnerLink name="wsLoyaltyTec" partnerLinkType="ns4:wsLoyaltyTec"
+                 partnerRole="LoyaltyTecPort"/>
   </partnerLinks>
 
   <!-- 
@@ -64,8 +69,79 @@
               messageType="ns1:FindCustomerRq"/>
     <variable name="invokeFindCustomer_FindCustomer_OutputVariable"
               messageType="ns1:FindCustomerRs"/>
+    <variable name="invokeGetLoyaltyPoints_GetLoyaltyPoints_InputVariable"
+              messageType="ns4:GetLoyaltyPointsRq"/>
+    <variable name="invokeGetLoyaltyPoints_GetLoyaltyPoints_OutputVariable"
+              messageType="ns4:GetLoyaltyPoinsRs"/>
   </variables>
-
+  <faultHandlers>
+    <catchAll>
+      <sequence name="Sequence2">
+        <if name="If1">
+          <documentation>
+            <![CDATA[succes exists]]>
+          </documentation>
+          <condition>not($outputVariable.payload/ns2:Success)</condition>
+          <assign name="assignError">
+            <copy ignoreMissingFromData="yes" bpelx:insertMissingToData="yes">
+              <from>'001'</from>
+              <to>$outputVariable.payload/ns2:Errors/ns3:Error/ns3:ErrorCode</to>
+            </copy>
+            <copy ignoreMissingFromData="yes" bpelx:insertMissingToData="yes">
+              <from>'Fatal Error'</from>
+              <to>$outputVariable.payload/ns2:Errors/ns3:Error/ns3:Description</to>
+            </copy>
+            <copy ignoreMissingFromData="yes" bpelx:insertMissingToData="yes">
+              <from>'FindCustomers'</from>
+              <to>$outputVariable.payload/ns2:Errors/ns3:Error/ns3:BusinessProcess</to>
+            </copy>
+            <copy ignoreMissingFromData="yes" bpelx:insertMissingToData="yes">
+              <from>'CustomerTestBiz'</from>
+              <to>$outputVariable.payload/ns2:Errors/ns3:Error/ns3:FailedService</to>
+            </copy>
+            <copy ignoreMissingFromData="yes" bpelx:insertMissingToData="yes">
+              <from>xp20:current-dateTime()</from>
+              <to>$outputVariable.payload/ns2:Errors/ns3:Error/ns3:TimeStamp</to>
+            </copy>
+          </assign>
+          <else><assign name="assignError"
+                        xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
+              <extensionAssignOperation>
+                <bpelx:remove xmlns:bpelx="http://schemas.oracle.com/bpel/extension">
+                  <bpelx:target>$outputVariable.payload/ns2:Customers</bpelx:target>
+                </bpelx:remove>
+              </extensionAssignOperation>
+              <extensionAssignOperation>
+                <bpelx:remove xmlns:bpelx="http://schemas.oracle.com/bpel/extension">
+                  <bpelx:target>$outputVariable.payload/ns2:Success</bpelx:target>
+                </bpelx:remove>
+              </extensionAssignOperation>
+              <copy ignoreMissingFromData="yes" bpelx:insertMissingToData="yes">
+                <from>'001'</from>
+                <to>$outputVariable.payload/ns2:Errors/ns3:Error/ns3:ErrorCode</to>
+              </copy>
+              <copy ignoreMissingFromData="yes" bpelx:insertMissingToData="yes">
+                <from>'Fatal Error'</from>
+                <to>$outputVariable.payload/ns2:Errors/ns3:Error/ns3:Description</to>
+              </copy>
+              <copy ignoreMissingFromData="yes" bpelx:insertMissingToData="yes">
+                <from>'FindCustomers'</from>
+                <to>$outputVariable.payload/ns2:Errors/ns3:Error/ns3:BusinessProcess</to>
+              </copy>
+              <copy ignoreMissingFromData="yes" bpelx:insertMissingToData="yes">
+                <from>'CustomerTestBiz'</from>
+                <to>$outputVariable.payload/ns2:Errors/ns3:Error/ns3:FailedService</to>
+              </copy>
+              <copy ignoreMissingFromData="yes" bpelx:insertMissingToData="yes">
+                <from>xp20:current-dateTime()</from>
+                <to>$outputVariable.payload/ns2:Errors/ns3:Error/ns3:TimeStamp</to>
+              </copy>
+            </assign>
+          </else>
+        </if>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
   <!-- 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
      ORCHESTRATION LOGIC                                               
@@ -104,7 +180,7 @@
             operation="FindCustomer"
             inputVariable="invokeFindCustomer_FindCustomer_InputVariable"
             outputVariable="invokeFindCustomer_FindCustomer_OutputVariable"/>
-    <assign name="transformOutput">
+    <assign name="assignFindCustomersOutput">
       <bpelx:annotation>
         <bpelx:pattern patternName="bpelx:transformation"/>
       </bpelx:annotation>
@@ -113,6 +189,54 @@
         <to variable="outputVariable" part="payload"/>
       </copy>
     </assign>
+    <scope name="Scope1">
+      <variables>
+        <variable name="CurrentIndex" type="xsd:integer"/>
+        <variable name="TotalCustomers" type="xsd:integer"/>
+      </variables>
+      <sequence name="Sequence3">
+        <assign name="assignLoopVariables">
+          <copy>
+            <from>0</from>
+            <to>$CurrentIndex</to>
+          </copy>
+          <copy>
+            <from>count($outputVariable.payload/ns2:Customers/ns2:Customer)</from>
+            <to>$TotalCustomers</to>
+          </copy>
+        </assign>
+        <while name="whileCustomers">
+          <condition>bpws:getVariableData('CurrentIndex') &lt; bpws:getVariableData('TotalCustomers')</condition>
+          <sequence>
+            <assign name="incrementCurrentIndex"
+                    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
+              <copy>
+                <from>bpws:getVariableData('CurrentIndex')+1</from>
+                <to>$CurrentIndex</to>
+              </copy>
+            </assign>
+            <assign name="assignCustomerID">
+              <copy>
+                <!-- <from>bpws:getVariableData('outputVariable','payload','/ns2:Customers/ns2:Customer[bpws:getVariableData('CurrentIndex')]/ns2:BasicInformation/ns2:ID')</from> -->
+                <from>bpws:getVariableData('outputVariable','payload')/ns2:Customers/ns2:Customer[bpws:getVariableData('CurrentIndex')]/ns2:BasicInformation/ns2:ID</from>
+                <to>$invokeGetLoyaltyPoints_GetLoyaltyPoints_InputVariable.GetLoyaltyPoinsRq/ns4:ID</to>
+              </copy>
+            </assign>
+            <invoke name="invokeGetLoyaltyPoints" partnerLink="wsLoyaltyTec"
+                    portType="ns4:LoyaltyTecPort" operation="GetLoyaltyPoints"
+                    inputVariable="invokeGetLoyaltyPoints_GetLoyaltyPoints_InputVariable"
+                    outputVariable="invokeGetLoyaltyPoints_GetLoyaltyPoints_OutputVariable"
+                    bpelx:invokeAsDetail="no"/>
+            <assign name="assignPointsToCustomer">
+              <copy bpelx:insertMissingToData="yes" ignoreMissingFromData="yes">
+                <from>ora:getNodeValue($invokeGetLoyaltyPoints_GetLoyaltyPoints_OutputVariable.GetLoyaltyPoinsRs/ns4:Points)</from>
+                <to>$outputVariable.payload/ns2:Customers[bpws:getVariableData('CurrentIndex')]/ns2:Customer/ns2:Memebership/ns2:LoyaltyPoints</to>
+              </copy>
+            </assign>
+          </sequence>
+        </while>
+      </sequence>
+    </scope>
     <!-- Generate reply to synchronous request -->
     <reply name="replyOutput" partnerLink="bpelfindreservations_client" portType="client:bpelFindReservations" operation="process" variable="outputVariable"/>
   </sequence>

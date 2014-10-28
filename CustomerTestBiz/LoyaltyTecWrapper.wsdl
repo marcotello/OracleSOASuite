@@ -1,0 +1,15 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+    
+     targetNamespace="http://soa.grupovidanta.com/LoyaltyTec"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="http://soa.grupovidanta.com/LoyaltyTec"
+     xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <plnk:partnerLinkType name="wsLoyaltyTec">
+        <plnk:role name="LoyaltyTecPort" portType="tns:LoyaltyTecPort"/>
+    </plnk:partnerLinkType>
+    <wsdl:import namespace="http://soa.grupovidanta.com/LoyaltyTec" location="LoyaltyTec.wsdl"/>
+</wsdl:definitions>

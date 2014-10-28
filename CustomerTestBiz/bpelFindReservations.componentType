@@ -12,4 +12,7 @@
              ui:wsdlLocation="CustomerTestTecWrapper.wsdl">
     <interface.wsdl interface="http://soa.grupovidanta.com/CustomerTestTec#wsdl.interface(CustomerTestTecPort)"/>
   </reference>
+  <reference name="wsLoyaltyTec" ui:wsdlLocation="LoyaltyTecWrapper.wsdl">
+    <interface.wsdl interface="http://soa.grupovidanta.com/LoyaltyTec#wsdl.interface(LoyaltyTecPort)"/>
+  </reference>
 </componentType>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://soa.grupovidanta.com/LoyaltyTec"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:tns="http://soa.grupovidanta.com/LoyaltyTec"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
+    <types>
+        <xsd:schema targetNamespace="http://soa.grupovidanta.com/LoyaltyTec/types"
+                    elementFormDefault="qualified">
+            <xsd:import schemaLocation="xsd/LoyaltyTec.xsd"
+                        namespace="http://soa.grupovidanta.com/LoyaltyTec"/>
+        </xsd:schema>
+    </types>
+    <message name="GetLoyaltyPointsRq">
+        <part name="GetLoyaltyPoinsRq" element="tns:GetLoyaltyPoinsRq"/>
+    </message>
+    <message name="GetLoyaltyPoinsRs">
+        <part name="GetLoyaltyPoinsRs" element="tns:GetLoyaltyPoinsRs"/>
+    </message>
+    <portType name="LoyaltyTecPort">
+        <operation name="GetLoyaltyPoints">
+            <input message="tns:GetLoyaltyPointsRq"/>
+            <output message="tns:GetLoyaltyPoinsRs"/>
+        </operation>
+    </portType>
+    <binding name="LoyaltyTecBinding" type="tns:LoyaltyTecPort">
+        <soap12:binding style="document"
+                        transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="GetLoyaltyPoints">
+            <soap12:operation style="document"
+                              soapAction="http://soa.grupovidanta.com/LoyaltyTec/GetLoyaltyPoints"
+                              soapActionRequired="false"/>
+            <input>
+                <soap12:body use="literal" parts="GetLoyaltyPoinsRq"/>
+            </input>
+            <output>
+                <soap12:body use="literal" parts="GetLoyaltyPoinsRs"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="LoyaltyTec">
+        <port name="LoyaltyTecPort_pt" binding="tns:LoyaltyTecBinding">
+            <soap12:address location="http://10.1.200.52:2080/soa-infra/services/default/LoyaltyTec/LoyaltyTec"/>
+        </port>
+    </service>
+</definitions>

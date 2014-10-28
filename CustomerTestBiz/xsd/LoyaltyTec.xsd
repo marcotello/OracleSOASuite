@@ -1,0 +1,25 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://soa.grupovidanta.com/LoyaltyTec"
+     xmlns:vid="http://soa.grupovidanta.com/VidantaCommons/LoyaltyTec" targetNamespace="http://soa.grupovidanta.com/LoyaltyTec"
+     elementFormDefault="qualified">
+    <xsd:import namespace="http://soa.grupovidanta.com/VidantaCommons/LoyaltyTec" schemaLocation="VidantaCommons_2.xsd"/>
+    <xsd:element name="GetLoyaltyPoinsRq">
+        <xsd:annotation>
+            <xsd:documentation>A sample element</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="ID" type="xsd:integer"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="GetLoyaltyPoinsRs">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Success" type="vid:SuccessType"/>
+                <xsd:element name="Points" type="xsd:integer"/>
+                <xsd:element name="Errors" type="vid:ErrorsType"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
