@@ -23,6 +23,12 @@
           importType="wsdl"/>
   <import namespace="http://soa.grupovidanta.com/LoyaltyTec"
           location="LoyaltyTecWrapper.wsdl" importType="wsdl"/>
+  <import namespace="http://xmlns.oracle.com/MemebershipCategoryRules/MemebershipCategoryRules_DecisionService_1"
+          location="MemebershipCategoryRules_DecisionService_1.wsdl"
+          importType="wsdl"/>
+  <import namespace="http://xmlns.oracle.com/MemebershipCategoryRules/MemebershipCategoryRules_DecisionService_1"
+          location="MemebershipCategoryRules_DecisionService_1Wrapper.wsdl"
+          importType="wsdl"/>
   <service name="CustomerTestBiz" ui:wsdlLocation="CustomerTestBiz.wsdl">
     <interface.wsdl interface="http://soa.grupovidanta.com/CustomerTestBiz#wsdl.interface(CustomerTestBizPort)"/>
     <binding.ws port="http://soa.grupovidanta.com/CustomerTestBiz#wsdl.endpoint(CustomerTestBiz/CustomerTestBizPort_pt)" soapVersion="1.2">
@@ -39,6 +45,9 @@
     <property name="bpel.config.transaction" type="xs:string" many="false">required</property>
     <property name="bpel.config.oneWayDeliveryPolicy" type="xs:string"
               many="false">async.persist</property>
+  </component>
+  <component name="MemebershipCategoryRules">
+    <implementation.decision src="MemebershipCategoryRules.decs"/>
   </component>
   <reference name="wsCustomerTestTec"
              ui:wsdlLocation="CustomerTestTec.wsdl">
@@ -74,5 +83,9 @@
   <wire>
     <source.uri>bpelFindReservations/wsLoyaltyTec</source.uri>
     <target.uri>wsLoyaltyTec</target.uri>
+  </wire>
+  <wire>
+    <source.uri>bpelFindReservations/MemebershipCategoryRules.MemebershipCategoryRules_DecisionService_1</source.uri>
+    <target.uri>MemebershipCategoryRules/MemebershipCategoryRules_DecisionService_1</target.uri>
   </wire>
 </composite>

@@ -31,9 +31,13 @@
          xmlns:ns3="http://soa.grupovidanta.com/VidantaCommons/CustomerTestBiz"
          xmlns:ns4="http://soa.grupovidanta.com/LoyaltyTec"
          xmlns:ns5="http://soa.grupovidanta.com/VidantaCommons/LoyaltyTec"
-         xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns6="http://xmlns.oracle.com/MemebershipCategoryRules/MemebershipCategoryRules_DecisionService_1"
+         xmlns:ns7="http://xmlns.oracle.com/bpel"
+         xmlns:ns8="http://soa.grupovidanta.com/CustomerTestBiz/Rules">
 
     <import namespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestBiz/bpelFindReservations" location="bpelFindReservations.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import location="oracle.xml.parser.v2.XMLElement" importType="http://schemas.oracle.com/bpel/extension/java"/>
     <!-- 
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         PARTNERLINKS                                                      
@@ -51,6 +55,9 @@
                  partnerRole="CustomerTestTecPort"/>
     <partnerLink name="wsLoyaltyTec" partnerLinkType="ns4:wsLoyaltyTec"
                  partnerRole="LoyaltyTecPort"/>
+    <partnerLink name="MemebershipCategoryRules.MemebershipCategoryRules_DecisionService_1"
+                 partnerLinkType="ns6:MemebershipCategoryRules.MemebershipCategoryRules_DecisionService_1"
+                 partnerRole="IDecisionService"/>
   </partnerLinks>
 
   <!-- 
@@ -193,50 +200,27 @@
       <variables>
         <variable name="CurrentIndex" type="xsd:integer"/>
         <variable name="TotalCustomers" type="xsd:integer"/>
-      </variables>
-      <sequence name="Sequence3">
-        <assign name="assignLoopVariables">
-          <copy>
-            <from>0</from>
-            <to>$CurrentIndex</to>
-          </copy>
-          <copy>
-            <from>count($outputVariable.payload/ns2:Customers/ns2:Customer)</from>
-            <to>$TotalCustomers</to>
-          </copy>
-        </assign>
-        <while name="whileCustomers">
-          <condition>bpws:getVariableData('CurrentIndex') &lt; bpws:getVariableData('TotalCustomers')</condition>
-          <sequence>
-            <assign name="incrementCurrentIndex"
-                    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
-              <copy>
-                <from>bpws:getVariableData('CurrentIndex')+1</from>
-                <to>$CurrentIndex</to>
-              </copy>
-            </assign>
-            <assign name="assignCustomerID">
-              <copy>
-                <!-- <from>bpws:getVariableData('outputVariable','payload','/ns2:Customers/ns2:Customer[bpws:getVariableData('CurrentIndex')]/ns2:BasicInformation/ns2:ID')</from> -->
-                <from>bpws:getVariableData('outputVariable','payload')/ns2:Customers/ns2:Customer[bpws:getVariableData('CurrentIndex')]/ns2:BasicInformation/ns2:ID</from>
-                <to>$invokeGetLoyaltyPoints_GetLoyaltyPoints_InputVariable.GetLoyaltyPoinsRq/ns4:ID</to>
-              </copy>
-            </assign>
-            <invoke name="invokeGetLoyaltyPoints" partnerLink="wsLoyaltyTec"
-                    portType="ns4:LoyaltyTecPort" operation="GetLoyaltyPoints"
-                    inputVariable="invokeGetLoyaltyPoints_GetLoyaltyPoints_InputVariable"
-                    outputVariable="invokeGetLoyaltyPoints_GetLoyaltyPoints_OutputVariable"
-                    bpelx:invokeAsDetail="no"/>
-            <assign name="assignPointsToCustomer">
-              <copy bpelx:insertMissingToData="yes" ignoreMissingFromData="yes">
-                <from>ora:getNodeValue($invokeGetLoyaltyPoints_GetLoyaltyPoints_OutputVariable.GetLoyaltyPoinsRs/ns4:Points)</from>
-                <to>$outputVariable.payload/ns2:Customers[bpws:getVariableData('CurrentIndex')]/ns2:Customer/ns2:Memebership/ns2:LoyaltyPoints</to>
-              </copy>
-            </assign>
-          </sequence>
-        </while>
-      </sequence>
-    </scope>
+        <variable name="CurrentCustomerID" type="xsd:integer"/>
+      </variables><sequence name="Sequence5"><sequence name="Sequence3"><assign name="assignLoopVariables"><copy><from>1</from><to>$CurrentIndex</to></copy><copy><from>count($outputVariable.payload/ns2:Customers/ns2:Customer)</from><to>$TotalCustomers</to></copy></assign><while name="whileCustomers"><condition>bpws:getVariableData('CurrentIndex') &lt;= bpws:getVariableData('TotalCustomers')</condition><sequence><assign name="assignCustomerID"><copy><!-- <from>bpws:getVariableData('outputVariable','payload','/ns2:Customers/ns2:Customer[bpws:getVariableData('CurrentIndex')]/ns2:BasicInformation/ns2:ID')</from> --><from>bpws:getVariableData('outputVariable','payload')/ns2:Customers/ns2:Customer[bpws:getVariableData('CurrentIndex')]/ns2:BasicInformation/ns2:ID</from><to>$invokeGetLoyaltyPoints_GetLoyaltyPoints_InputVariable.GetLoyaltyPoinsRq/ns4:ID</to></copy><copy><from>bpws:getVariableData('outputVariable','payload')/ns2:Customers/ns2:Customer[bpws:getVariableData('CurrentIndex')]/ns2:BasicInformation/ns2:ID</from><to>$CurrentCustomerID</to></copy></assign><invoke name="invokeGetLoyaltyPoints"
+                                               partnerLink="wsLoyaltyTec"
+                                               portType="ns4:LoyaltyTecPort"
+                                               operation="GetLoyaltyPoints"
+                                               inputVariable="invokeGetLoyaltyPoints_GetLoyaltyPoints_InputVariable"
+                                               outputVariable="invokeGetLoyaltyPoints_GetLoyaltyPoints_OutputVariable"
+                                               bpelx:invokeAsDetail="no"/><assign name="assignPointsToCustomer"><copy bpelx:insertMissingToData="yes"
+                                                                                                                      ignoreMissingFromData="yes"><from>ora:getNodeValue($invokeGetLoyaltyPoints_GetLoyaltyPoints_OutputVariable.GetLoyaltyPoinsRs/ns4:Points)</from><to>$outputVariable.payload/ns2:Customers/ns2:Customer[bpws:getVariableData('CurrentIndex')]/ns2:Memebership/ns2:LoyaltyPoints</to></copy></assign><scope name="GetMembershipCategoryRule"
+                                                                                                                                                                                                                                                                                                                                                                                                                               exitOnStandardFault="no"><bpelx:annotation><bpelx:pattern patternName="bpelx:decide"/></bpelx:annotation><variables><variable name="dsIn"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             messageType="ns6:callFunctionStatelessMessage"/><variable name="dsOut"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       messageType="ns6:callFunctionStatelessDecisionMessage"/></variables><sequence name="Sequence4"><assign name="Facts_To_Rule_Service"><copy><from variable="outputVariable"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       part="payload"><query>ns2:Customers/ns2:Customer[bpws:getVariableData('CurrentIndex')]/ns2:Address/ns2:State</query></from><to variable="dsIn"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      part="payload"><query>ns6:parameterList/ns8:CustomerLocation/ns8:State</query></to></copy></assign><assign name="BPEL_Header"><copy><from>"MemebershipCategoryRules_DecisionService_1"</from><to variable="dsIn"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       part="payload"><query>@name</query></to></copy></assign><invoke name="Invoke"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       partnerLink="MemebershipCategoryRules.MemebershipCategoryRules_DecisionService_1"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       portType="ns6:IDecisionService"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       operation="callFunctionStateless"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       inputVariable="dsIn"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       outputVariable="dsOut"/><assign name="Rule_Service_To_Facts"><copy bpelx:insertMissingToData="yes"><from>$dsOut.payload/ns6:resultList/ns8:MembershipCategory/ns8:MemebershipCategory</from><to>$outputVariable.payload/ns2:Customers/ns2:Customer[bpws:getVariableData('CurrentIndex')]/ns2:Memebership/ns2:MembershipCategory</to></copy></assign></sequence></scope><assign name="incrementCurrentIndex"
+                               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"><copy><from>number(bpws:getVariableData('CurrentIndex')+1)</from><to>$CurrentIndex</to></copy></assign></sequence></while></sequence></sequence></scope>
     <!-- Generate reply to synchronous request -->
     <reply name="replyOutput" partnerLink="bpelfindreservations_client" portType="client:bpelFindReservations" operation="process" variable="outputVariable"/>
   </sequence>

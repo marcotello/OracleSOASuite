@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<decisionServices xmlns="http://xmlns.oracle.com/bpel/rules" name="MemebershipCategoryRules">
+    <ruleEngineProvider provider="Oracle_11.0.0.0.0" name="OracleRulesSDK">
+        <repository type="SCA-Archive">
+            <path>CustomerTestBiz/oracle/rules/customertestbiz/MemebershipCategoryRules.rules</path>
+        </repository>
+    </ruleEngineProvider>
+    <decisionService name="MemebershipCategoryRules_DecisionService_1" ruleEngineProviderReference="OracleRulesSDK" targetNamespace="http://xmlns.oracle.com/MemebershipCategoryRules/MemebershipCategoryRules_DecisionService_1">
+        <catalog>MemebershipCategoryRules</catalog>
+        <pattern name="CallFunctionStateless">
+            <arguments>
+                <call>customertestbiz.MemebershipCategoryRules.MemebershipCategoryRules_DecisionService_1</call>
+            </arguments>
+        </pattern>
+        <pattern name="CallFunctionStateful">
+            <arguments>
+                <call>customertestbiz.MemebershipCategoryRules.MemebershipCategoryRules_DecisionService_1</call>
+            </arguments>
+        </pattern>
+    </decisionService>
+    <schemaInformation>
+        <dictionary fqnPackage="customertestbiz" fqnName="MemebershipCategoryRules" updateNumber="92">
+            <schemaBrowser>
+                <package>com.grupovidanta.soa.customertestbiz.rules</package>
+                <namespace>http://soa.grupovidanta.com/CustomerTestBiz/Rules</namespace>
+            </schemaBrowser>
+            <schemaImport namespace="http://xmlns.oracle.com/MemebershipCategoryRules/MemebershipCategoryRules_DecisionService_1" localPart="CustomerMembership.xsd" schemaLocation="xsd/MemebershipCategoryRules_DecisionService_1MessageTypes.xsd" package="">
+                <import namespace="http://xmlns.oracle.com/MemebershipCategoryRules/MemebershipCategoryRules_DecisionService_1" localPart="CustomerMembership.xsd"/>
+                <import namespace="http://soa.grupovidanta.com/CustomerTestBiz/Rules" localPart="CustomerMembership.xsd"/>
+                <import namespace="http://xmlns.oracle.com/bpel/rules" localPart="DecisionServicePrimitiveTypes.xsd"/>
+                <import namespace="http://xmlns.oracle.com/bpel" localPart="BpelProcess.xsd"/>
+                <import namespace="http://xmlns.oracle.com/MemebershipCategoryRules/MemebershipCategoryRules_DecisionService_1" localPart="MemebershipCategoryRules_DecisionService_1Types.xsd"/>
+            </schemaImport>
+        </dictionary>
+    </schemaInformation>
+</decisionServices>

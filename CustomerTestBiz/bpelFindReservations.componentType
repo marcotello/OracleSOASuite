@@ -15,4 +15,8 @@
   <reference name="wsLoyaltyTec" ui:wsdlLocation="LoyaltyTecWrapper.wsdl">
     <interface.wsdl interface="http://soa.grupovidanta.com/LoyaltyTec#wsdl.interface(LoyaltyTecPort)"/>
   </reference>
+  <reference name="MemebershipCategoryRules.MemebershipCategoryRules_DecisionService_1"
+             ui:wsdlLocation="MemebershipCategoryRules_DecisionService_1Wrapper.wsdl">
+    <interface.wsdl interface="http://xmlns.oracle.com/MemebershipCategoryRules/MemebershipCategoryRules_DecisionService_1#wsdl.interface(IDecisionService)"/>
+  </reference>
 </componentType>

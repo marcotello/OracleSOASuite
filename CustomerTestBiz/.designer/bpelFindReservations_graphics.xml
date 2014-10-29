@@ -4,19 +4,23 @@
    <annotationfile/>
    <iconize/>
    <partnerlink_locations>
-      <partnerlink name="bpelfindreservations_client" x="2" y="625" side="left"/>
-      <partnerlink name="CustomerTestTec" x="1042" y="278" side="right"/>
-      <partnerlink name="wsLoyaltyTec" x="1042" y="871" side="right"/>
+      <partnerlink name="bpelfindreservations_client" x="2" y="711" side="left"/>
+      <partnerlink name="CustomerTestTec" x="1048" y="278" side="right"/>
+      <partnerlink name="wsLoyaltyTec" x="1048" y="821" side="right"/>
+      <partnerlink name="MemebershipCategoryRules.MemebershipCategoryRules_DecisionService_1" x="1048" y="18" side="right"/>
    </partnerlink_locations>
-   <graph_layout viewport="0,600,1175,535" show_swimlanes="true">
+   <graph_layout viewport="0,189,1181,620" show_swimlanes="true">
       <layout_item collapsed="false" xpath="/process" type="process" showhandlers="true"/>
       <layout_item collapsed="false" xpath="/process/faultHandlers/catchAll" type="catchall"/>
       <layout_item collapsed="false" xpath="/process/faultHandlers/catchAll/sequence" type="sequence"/>
       <layout_item collapsed="false" xpath="/process/sequence" type="sequence"/>
       <layout_item collapsed="false" xpath="/process/sequence/scope" type="scope" showhandlers="true"/>
       <layout_item collapsed="false" xpath="/process/sequence/scope/sequence" type="sequence"/>
-      <layout_item collapsed="false" xpath="/process/sequence/scope/sequence/while" type="while"/>
-      <layout_item collapsed="false" xpath="/process/sequence/scope/sequence/while/sequence" type="sequence"/>
+      <layout_item collapsed="false" xpath="/process/sequence/scope/sequence/sequence" type="sequence"/>
+      <layout_item collapsed="false" xpath="/process/sequence/scope/sequence/sequence/while" type="while"/>
+      <layout_item collapsed="false" xpath="/process/sequence/scope/sequence/sequence/while/sequence" type="sequence"/>
+      <layout_item collapsed="true" xpath="/process/sequence/scope/sequence/sequence/while/sequence/scope" type="rule" showhandlers="true"/>
+      <layout_item collapsed="false" xpath="/process/sequence/scope/sequence/sequence/while/sequence/scope/sequence" type="sequence"/>
    </graph_layout>
    <bookmarks/>
 </graphics>
