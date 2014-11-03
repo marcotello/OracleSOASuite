@@ -1,0 +1,73 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://soa.grupovidanta.com/VidantaCommons/CustomerTestEnt"
+            targetNamespace="http://soa.grupovidanta.com/VidantaCommons/CustomerTestEnt"
+            elementFormDefault="qualified">
+    <xsd:complexType name="SuccessType">
+        <xsd:annotation>
+            <xsd:documentation>Returning an empty element of this type indicates
+                               the successful processing of an OpenTravel
+                               message. This is used in conjunction with the
+                               Warning Type to report any warnings or business
+                               errors.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:complexType>
+    <xsd:complexType name="ErrorsType">
+        <xsd:annotation>
+            <xsd:documentation xmlns:lang="en">A collection of errors that
+                                               occurred during the processing of
+                                               a message.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="Error" type="ErrorType" maxOccurs="99">
+                <xsd:annotation>
+                    <xsd:documentation xmlns:lang="en">An error that occurred
+                                                       during the processing of
+                                                       a message.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ErrorType">
+        <xsd:annotation>
+            <xsd:documentation xmlns:lang="en">Standard way to indicate that an
+                                               error occurred during the Web
+                                               Service processing. If the
+                                               message successfully processes,
+                                               but there are business errors,
+                                               those errors should be passed in
+                                               the warning element.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="ErrorCode" type="GV_StandardCodes">
+                <xsd:annotation>
+                    <xsd:documentation>The Error element MUST contain the Type
+                                       attribute that uses a recommended set of
+                                       values to indicate the error type. The
+                                       validating XSD can expect to accept
+                                       values that it has NOT been explicitly
+                                       coded for and process them by using Type
+                                       ="Unknown". Refer to OpenTravel Code List
+                                       Error Warning Type (EWT).</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Description" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Details of the error.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="BusinessProcess" type="xsd:string"/>
+            <xsd:element name="FailedService" type="xsd:string"/>
+            <xsd:element name="TimeStamp" type="xsd:dateTime"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="GV_StandardCodes">
+        <xsd:annotation>
+            <xsd:documentation xmlns:lang="en">Used for codes in the Standard
+                                               Grupo Vidanta Code tables.
+                                               Possible values of this pattern
+                                               are 1, 101, 101.EQP, or 101.EQP.X.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+</xsd:schema>

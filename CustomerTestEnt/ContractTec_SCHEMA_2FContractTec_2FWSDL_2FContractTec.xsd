@@ -1,0 +1,56 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<schema targetNamespace="http://soa.grupovidanta.com/ContractTec/" elementFormDefault="qualified"
+     xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://soa.grupovidanta.com/ContractTec/"
+     xmlns:vid="http://soa.grupovidanta.com/VidantaCommons/ContractTec/">
+    <import schemaLocation="ContractTec_SCHEMA_2FContractTec_2FWSDL_2FVidantaCommons.xsd" namespace="http://soa.grupovidanta.com/VidantaCommons/ContractTec/"/>
+    <element name="GetContractByIDRq">
+        <complexType>
+            <sequence>
+                <element name="ContractID" type="integer" minOccurs="0" maxOccurs="1"/>
+            </sequence>
+        </complexType>
+    </element>
+    <element name="GetContractByIDRs">
+        <complexType>
+            <sequence>
+                <element name="Success" type="vid:SuccessType"/>
+                <element name="Contract" type="tns:ContractType"/>
+                <element name="Errors" type="vid:ErrorsType"/>
+            </sequence>
+        </complexType>
+    </element>
+    <complexType name="ContractType">
+        <sequence>
+            <element name="id" type="string"/>
+            <element name="contractNumber" type="string"/>
+            <element name="description" type="string"/>
+            <element name="creationDate" type="date"/>
+            <element name="signDate" type="date"/>
+            <element name="product" type="tns:ProductType"/>
+            <element name="vendor" type="tns:PersonType"/>
+            <element name="facility" type="tns:FacilityType"/>
+        </sequence>
+    </complexType>
+    <complexType name="ProductType">
+        <sequence>
+            <element name="productID" type="integer"/>
+            <element name="description" type="string"/>
+            <element name="price" type="double"/>
+        </sequence>
+    </complexType>
+    <complexType name="PersonType">
+        <sequence>
+            <element name="personID" type="integer"/>
+            <element name="name" type="string"/>
+            <element name="lastName" type="string"/>
+            <element name="employeeNumber" type="string"/>
+            <element name="department" type="string"/>
+        </sequence>
+    </complexType>
+    <complexType name="FacilityType">
+        <sequence>
+            <element name="facilityID" type="integer"/>
+            <element name="name" type="string"/>
+        </sequence>
+    </complexType>
+</schema>

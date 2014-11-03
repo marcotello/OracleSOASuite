@@ -1,0 +1,237 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Nov 03 11:39:01 CST 2014
+  Author:  marco
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="bpelFindCustomers"
+               targetNamespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestEnt/bpelFindCustomers"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestEnt/bpelFindCustomers"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://soa.grupovidanta.com/CustomerTestBiz"
+         xmlns:ns2="http://soa.grupovidanta.com/ContractTec/"
+         xmlns:ns3="http://soa.grupovidanta.com/CustomerTestEnt"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:ns4="http://soa.grupovidanta.com/VidantaCommons/CustomerTestEnt"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap">
+
+    <import namespace="http://xmlns.oracle.com/SOAEnvironmentTest/CustomerTestEnt/bpelFindCustomers" location="bpelFindCustomers.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="bpelfindcustomers_client" partnerLinkType="client:bpelFindCustomers" myRole="bpelFindCustomersProvider"/>
+    <partnerLink name="wsCustomerTestBiz"
+                 partnerLinkType="ns1:wsCustomerTestBiz"
+                 partnerRole="CustomerTestBizPort"/>
+    <partnerLink name="wsContractTec" partnerLinkType="ns2:wsContractTec"
+                 partnerRole="ContractTecPort"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:bpelFindCustomersRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:bpelFindCustomersResponseMessage"/>
+    <variable name="invokeFinCustomers_FindCustomers_InputVariable"
+              messageType="ns1:FindCustomersRq"/>
+    <variable name="invokeFinCustomers_FindCustomers_OutputVariable"
+              messageType="ns1:FindCustomersRs"/>
+    <variable name="invokeGetContractByID_GetContractByID_InputVariable"
+              messageType="ns2:GetContractByIDRq"/>
+    <variable name="invokeGetContractByID_GetContractByID_OutputVariable"
+              messageType="ns2:GetContractByIDRs"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <assign name="Assign1">
+        <extensionAssignOperation>
+          <bpelx:remove>
+            <bpelx:target>$outputVariable.payload/ns3:Success</bpelx:target>
+          </bpelx:remove>
+        </extensionAssignOperation>
+        <extensionAssignOperation>
+          <bpelx:remove>
+            <bpelx:target>$outputVariable.payload/ns3:Customers</bpelx:target>
+          </bpelx:remove>
+        </extensionAssignOperation>
+        <copy>
+          <from>'001'</from>
+          <to>$outputVariable.payload/ns3:Errors/ns4:Error/ns4:ErrorCode</to>
+        </copy>
+        <copy>
+          <from>'Fatal Error, Oracle SOA Suite could not continue with the process'</from>
+          <to>$outputVariable.payload/ns3:Errors/ns4:Error/ns4:Description</to>
+        </copy>
+        <copy>
+          <from>'FindCustomers'</from>
+          <to>$outputVariable.payload/ns3:Errors/ns4:Error/ns4:BusinessProcess</to>
+        </copy>
+        <copy>
+          <from>'CustomerTestEnt'</from>
+          <to>$outputVariable.payload/ns3:Errors/ns4:Error/ns4:FailedService</to>
+        </copy>
+        <copy>
+          <from>xp20:current-dateTime()</from>
+          <to>$outputVariable.payload/ns3:Errors/ns4:Error/ns4:TimeStamp</to>
+        </copy>
+      </assign>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in bpelFindCustomers.wsdl) -->
+    <receive name="receiveInput" partnerLink="bpelfindcustomers_client" portType="client:bpelFindCustomers" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="assignFindCustomers">
+      <copy ignoreMissingFromData="yes">
+        <from>$inputVariable.payload/ns3:CustomerID</from>
+        <to>$invokeFinCustomers_FindCustomers_InputVariable.FindCustomersRq/ns1:CustomerID</to>
+      </copy>
+      <copy ignoreMissingFromData="yes">
+        <from>$inputVariable.payload/ns3:FirstName</from>
+        <to>$invokeFinCustomers_FindCustomers_InputVariable.FindCustomersRq/ns1:FirstName</to>
+      </copy>
+      <copy ignoreMissingFromData="yes">
+        <from>$inputVariable.payload/ns3:LastName</from>
+        <to>$invokeFinCustomers_FindCustomers_InputVariable.FindCustomersRq/ns1:LastName</to>
+      </copy>
+      <copy ignoreMissingFromData="yes">
+        <from>$inputVariable.payload/ns3:Email</from>
+        <to>$invokeFinCustomers_FindCustomers_InputVariable.FindCustomersRq/ns1:Email</to>
+      </copy>
+      <copy ignoreMissingFromData="yes">
+        <from>$inputVariable.payload/ns3:UserName</from>
+        <to>$invokeFinCustomers_FindCustomers_InputVariable.FindCustomersRq/ns1:UserName</to>
+      </copy>
+    </assign>
+    <invoke name="invokeFindCustomers" partnerLink="wsCustomerTestBiz"
+            portType="ns1:CustomerTestBizPort" operation="FindCustomers"
+            inputVariable="invokeFinCustomers_FindCustomers_InputVariable"
+            outputVariable="invokeFinCustomers_FindCustomers_OutputVariable"
+            bpelx:invokeAsDetail="no"/>
+    <assign name="transformOutput">
+      <bpelx:annotation>
+        <bpelx:pattern patternName="bpelx:transformation"/>
+      </bpelx:annotation>
+      <copy>
+        <from>ora:doXSLTransformForDoc("xsl/Transformation_1.xsl", $invokeFinCustomers_FindCustomers_OutputVariable.FindCustomersRs)</from>
+        <to variable="outputVariable" part="payload"/>
+      </copy>
+    </assign>
+    <scope name="Scope1">
+      <variables>
+        <variable name="CurrentIndex" type="xsd:integer"/>
+        <variable name="TotalCustomers" type="xsd:integer"/>
+      </variables>
+      <sequence name="Sequence1"><assign name="assignLoopVariables"
+                                         xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
+          <copy>
+            <from>1</from>
+            <to>$CurrentIndex</to>
+          </copy>
+          <copy>
+            <from>count($outputVariable.payload/ns3:Customers/ns3:Customer)</from>
+            <to>$TotalCustomers</to>
+          </copy>
+        </assign>
+        <while name="While1">
+          <condition>bpws:getVariableData('CurrentIndex') &lt;= bpws:getVariableData('TotalCustomers')</condition>
+          <sequence name="Sequence2">
+            <assign name="assignContractID">
+              <copy>
+                <from>bpws:getVariableData('outputVariable','payload')/ns3:Customers/ns3:Customer[bpws:getVariableData('CurrentIndex')]/ns3:BasicInformation/ns3:ID</from>
+                <to>$invokeGetContractByID_GetContractByID_InputVariable.GetContractByIDRq/ns2:ContractID</to>
+              </copy>
+            </assign>
+            <invoke name="invokeGetContractByID" partnerLink="wsContractTec"
+                    portType="ns2:ContractTecPort" operation="GetContractByID"
+                    inputVariable="invokeGetContractByID_GetContractByID_InputVariable"
+                    outputVariable="invokeGetContractByID_GetContractByID_OutputVariable"
+                    bpelx:invokeAsDetail="no"/>
+            <assign name="assignContractToCustomer">
+              <copy bpelx:insertMissingToData="yes">
+                <from>$invokeGetContractByID_GetContractByID_OutputVariable.GetContractByIDRs/ns2:Contract/ns2:id</from>
+                <to>$outputVariable.payload/ns3:Customers/ns3:Customer[bpws:getVariableData('CurrentIndex')]/ns3:Contract/ns3:id</to>
+              </copy>
+              <copy bpelx:insertMissingToData="yes">
+                <from>$invokeGetContractByID_GetContractByID_OutputVariable.GetContractByIDRs/ns2:Contract/ns2:contractNumber</from>
+                <to>$outputVariable.payload/ns3:Customers/ns3:Customer[bpws:getVariableData('CurrentIndex')]/ns3:Contract/ns3:contractNumber</to>
+              </copy>
+              <copy bpelx:insertMissingToData="yes">
+                <from>$invokeGetContractByID_GetContractByID_OutputVariable.GetContractByIDRs/ns2:Contract/ns2:description</from>
+                <to>$outputVariable.payload/ns3:Customers/ns3:Customer[bpws:getVariableData('CurrentIndex')]/ns3:Contract/ns3:description</to>
+              </copy>
+              <copy bpelx:insertMissingToData="yes">
+                <from>$invokeGetContractByID_GetContractByID_OutputVariable.GetContractByIDRs/ns2:Contract/ns2:creationDate</from>
+                <to>$outputVariable.payload/ns3:Customers/ns3:Customer[bpws:getVariableData('CurrentIndex')]/ns3:Contract/ns3:creationDate</to>
+              </copy>
+              <copy bpelx:insertMissingToData="yes">
+                <from>$invokeGetContractByID_GetContractByID_OutputVariable.GetContractByIDRs/ns2:Contract/ns2:signDate</from>
+                <to>$outputVariable.payload/ns3:Customers/ns3:Customer[bpws:getVariableData('CurrentIndex')]/ns3:Contract/ns3:signDate</to>
+              </copy>
+              <copy bpelx:insertMissingToData="yes">
+                <from>$invokeGetContractByID_GetContractByID_OutputVariable.GetContractByIDRs/ns2:Contract/ns2:product/ns2:productID</from>
+                <to>$outputVariable.payload/ns3:Customers/ns3:Customer[bpws:getVariableData('CurrentIndex')]/ns3:Contract/ns3:product/ns3:productID</to>
+              </copy>
+              <copy bpelx:insertMissingToData="yes">
+                <from>$invokeGetContractByID_GetContractByID_OutputVariable.GetContractByIDRs/ns2:Contract/ns2:product/ns2:description</from>
+                <to>$outputVariable.payload/ns3:Customers/ns3:Customer[bpws:getVariableData('CurrentIndex')]/ns3:Contract/ns3:product/ns3:description</to>
+              </copy>
+              <copy bpelx:insertMissingToData="yes">
+                <from>$invokeGetContractByID_GetContractByID_OutputVariable.GetContractByIDRs/ns2:Contract/ns2:product/ns2:price</from>
+                <to>$outputVariable.payload/ns3:Customers/ns3:Customer[bpws:getVariableData('CurrentIndex')]/ns3:Contract/ns3:product/ns3:price</to>
+              </copy>
+            </assign>
+            <assign name="incrementIndex">
+              <copy>
+                <from>number(bpws:getVariableData('CurrentIndex')+1)</from>
+                <to>$CurrentIndex</to>
+              </copy>
+            </assign>
+          </sequence>
+        </while>
+      </sequence>
+    </scope>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="bpelfindcustomers_client" portType="client:bpelFindCustomers" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

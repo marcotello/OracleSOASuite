@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WL5G3N0:definitions
+    
+     targetNamespace="http://soa.grupovidanta.com/ContractTec/"
+     xmlns:WL5G3N2="http://schemas.xmlsoap.org/wsdl/soap12/"
+     xmlns:WL5G3N0="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:WL5G3N1="http://soa.grupovidanta.com/ContractTec/"
+    >
+    <WL5G3N0:types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://soa.grupovidanta.com/ContractTec/types"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+             xmlns:tns="http://soa.grupovidanta.com/ContractTec/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://soa.grupovidanta.com/ContractTec/" schemaLocation="ContractTec_SCHEMA_2FContractTec_2FWSDL_2FContractTec.xsd"/>
+        </xsd:schema>
+    </WL5G3N0:types>
+    <WL5G3N0:message name="GetContractByIDRq">
+        <WL5G3N0:part name="GetContractByIDRq" element="WL5G3N1:GetContractByIDRq"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="GetContractByIDRs">
+        <WL5G3N0:part name="GetContractByIDRs" element="WL5G3N1:GetContractByIDRs"/>
+    </WL5G3N0:message>
+    <WL5G3N0:portType name="ContractTecPort">
+        <WL5G3N0:operation name="GetContractByID">
+            <WL5G3N0:input message="WL5G3N1:GetContractByIDRq"/>
+            <WL5G3N0:output message="WL5G3N1:GetContractByIDRs"/>
+        </WL5G3N0:operation>
+    </WL5G3N0:portType>
+    <WL5G3N0:binding name="ContractTecBinding" type="WL5G3N1:ContractTecPort">
+        <WL5G3N2:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <WL5G3N0:operation name="GetContractByID">
+            <WL5G3N2:operation style="document" soapAction="http://soa.grupovidanta.com/CcontractTec/GetContractByID"
+                 soapActionRequired="false"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body use="literal" parts="GetContractByIDRq"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body use="literal" parts="GetContractByIDRs"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+    </WL5G3N0:binding>
+    <WL5G3N0:service name="ContractTecBindingQSService">
+        <WL5G3N0:port name="ContractTecBindingQSPort" binding="WL5G3N1:ContractTecBinding">
+            <WL5G3N2:address location="http://10.1.200.52:1080/ContractTec"/>
+        </WL5G3N0:port>
+    </WL5G3N0:service>
+</WL5G3N0:definitions>
